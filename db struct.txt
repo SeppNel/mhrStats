@@ -1,0 +1,27 @@
+<hunts>
+	<hunt>
+		date
+		time
+		failed
+		<player>
+			name
+			carts
+		</player>
+		<otomo>
+			name
+		</otomo>
+		<monster>
+			name
+			maxHP
+			<player>
+				name
+				phys
+				elem
+				poison
+				blast
+				rider
+				bombs //num bombs used
+			</player>
+		</monster>
+	</hunt>
+</hunts>
