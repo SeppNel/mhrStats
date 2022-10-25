@@ -114,18 +114,9 @@ function getAllPlayers($bd){
 
 function getHuntCount($bd, $p){
 	$count = 0;
-	if(isOtomo($bd, $p)){
-		foreach ($bd->hunt as $hunt) {
-			if(in_array($p, getOtomosFromHunt($hunt))){
-				$count++;
-			}
-		}
-	}
-	else{
-		foreach ($bd->hunt as $hunt) {
-			if(in_array($p, getHuntersFromHunt($hunt))){
-				$count++;
-			}
+	foreach ($bd->hunt as $hunt) {
+		if(in_array($p, getPlayersFromHunt($hunt))){
+			$count++;
 		}
 	}
 
