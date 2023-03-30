@@ -177,9 +177,8 @@ function getMinMaxMonster($bd, $p, $type){
 			<div id="top">
 				<div id="hunterPhoto">
 					<?php
-						$path = "/mnt/disk/.resources/img/mhRise/players" . strtolower($name) . ".png";
-						if(file_exists("/mnt/disk/.resources/img/mhRise/players/" . strtolower($name) . ".png")){
-							echo '<img src="/.resources/img/mhRise/players/', strtolower($name), '.png">';
+						if(file_exists("/mnt/disk/.resources/img/mhRise/players/" . strtolower($name) . ".webp")){
+							echo '<img src="/.resources/img/mhRise/players/', strtolower($name), '.webp">';
 						}
 						else{
 							echo '<img src="/.resources/img/mhRise/players/default.jpg">';
