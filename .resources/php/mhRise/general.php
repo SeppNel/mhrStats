@@ -143,8 +143,7 @@ function getMostKilledMonster($bd){
 	$n = array();
 
 	foreach ($bd->hunt as $hunt) {
-		$monsters = $hunt->monster;
-		foreach ($monsters as $monster) {
+		foreach ($hunt->monster as $monster) {
 			$mName = strval($monster->name);
 			if(isset($n[$mName])){
 				$n[$mName]++;
