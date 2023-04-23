@@ -260,6 +260,74 @@ function victoryStar($bd, $t){
 	return $h;
 }
 
+function mostDifficultMonster($bd){
+	$m = "";
+	$p = 101;
+
+	foreach (getAllMonsters($bd) as $monster) {
+		$new = monsterVictoryPercent($bd, $monster);
+		if($new == -1){
+			continue;
+		}
+
+		if($new < $p){
+			$p = $new;
+			$m = $monster;
+		}
+	}
+
+	return $m;
+}
+
+function easiestMonster($bd){
+	$m = "";
+	$p = 0;
+
+	foreach (getAllMonsters($bd) as $monster) {
+		$new = monsterVictoryPercent($bd, $monster);
+		if($new == -1){
+			continue;
+		}
+
+		if($new > $p){
+			$p = $new;
+			$m = $monster;
+		}
+	}
+
+	return $m;
+}
+
+function slowestMonster($bd){
+	$m = "";
+	$t = 0;
+
+	foreach (getAllMonsters($bd) as $monster) {
+		$new = huntedMeanTime($bd, $monster);
+		if($new > $t){
+			$t = $new;
+			$m = $monster;
+		}
+	}
+
+	return $m;
+}
+
+function mostTankyMonster($bd){
+	$m = "";
+	$h = 0;
+
+	foreach (getAllMonsters($bd) as $monster) {
+		$new = monsterHPRange($bd, $monster)[1];
+		if($new > $h){
+			$h = $new;
+			$m = $monster;
+		}
+	}
+
+	return $m;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -317,6 +385,18 @@ function victoryStar($bd, $t){
 		</tr>
 		<tr>
 			<td>Monstruo más cazado</td><td><?php echo getMostKilledMonster($bd); ?></td>
+		</tr>
+		<tr>
+			<td>Monstruo más chungo</td><td><?php echo mostDifficultMonster($bd); ?></td>
+		</tr>
+		<tr>
+			<td>Monstruo más easy</td><td><?php echo easiestMonster($bd); ?></td>
+		</tr>
+		<tr>
+			<td>Monstruo más lento</td><td><?php echo slowestMonster($bd); ?></td>
+		</tr>
+		<tr>
+			<td>Monstruo más tanque</td><td><?php echo mostTankyMonster($bd); ?></td>
 		</tr>
 		<tr>
 			<td>Dia de mayor vicio</td><td><?php echo date("d-m-Y", intval(getMostVicio($bd))); ?></td>

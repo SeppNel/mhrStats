@@ -33,7 +33,8 @@ $hunt = $bd->hunt[$id];
 								echo $monsters[$i], " - ";
 							}
 						}
-						echo " en ", floor($hunt->time / 60), ":", sprintf('%02d', $hunt->time % 60);
+						echo " en ";
+						humanTime($hunt->time);
 					?>
 				</h1>
 			</div>

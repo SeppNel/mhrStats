@@ -3,18 +3,6 @@ include(".resources/php/mhRise/prepareDB.php");
 require_once(".resources/php/mhRise/helpers.php");
 $bd = simplexml_load_file(".resources/bd/mhRise/mhRise.xml");
 
-function getAllMonsters(){
-	global $bd;
-	$mNames = array();
-	foreach ($bd->hunt as $hunt) {
-		foreach ($hunt->monster as $monster) {
-			$mNames[strval($monster->name)] = true;
-		}
-	}
-
-	return array_keys($mNames);
-}
-
 function getAllDates(){
 	global $bd;
 	$n = array();
@@ -116,7 +104,9 @@ function getAllDates(){
 			<select id="monsterSelect" onchange="filterTable('monsterSelect')">
 				<option value="0" selected>No Filtrar</option>
 				<?php
-					foreach (getAllMonsters() as $monster) {
+					$monsters = getAllMonsters($bd);
+					sort($monsters);
+					foreach ($monsters as $monster) {
 						echo '<option value="', $monster, '">', $monster, '</option>';
 					}
 				?>

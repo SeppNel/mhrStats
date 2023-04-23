@@ -2,6 +2,8 @@
 // ((100 - avg(%otomoDamagePX) * playerCount) / playerCount) || (100 - avg(allOtomoDamageinHuntPX) / playerCount)
 const DPS_INTERVAL = [0, 0, 40.4729, 27.9414, 20.6517]; // Just use the hunterAVG function from testing.php
 
+// --- HUNTS ---
+
 function getHuntersFromHunt($hunt){
 	$pNames = [];
 	foreach ($hunt->player as $player) {
@@ -83,6 +85,16 @@ function getDamageTypeFromHunt($hunt){
 	return $damage;
 }
 
+function getCartsFromHunt($hunt, $name){
+	foreach ($hunt->player as $player) {
+		if($player->name == $name){
+			return intval($player->carts);
+		}
+	}
+}
+
+// --- HUNTERS ---
+
 function getAllHunters($bd){
 	$n = [];
 	foreach ($bd->hunt as $hunt) {
@@ -94,6 +106,30 @@ function getAllHunters($bd){
 	return array_keys($n);
 }
 
+function avgCarts($bd, $name){
+	$c = [];
+	$hunts = $bd->hunt;
+	foreach ($hunts as $hunt) {
+		foreach ($hunt->player as $player) {
+			if($player->name == $name){
+				if($player->carts != -1){
+					array_push($c, intval($player->carts));
+				}
+					
+				break;
+			}
+		}
+	}
+
+	if(count($c) == 0){
+		return 0;
+	}
+
+	return array_sum($c) / count($c);
+}
+
+// --- OTOMOS ---
+
 function getAllOtomos($bd){
 	$n = [];
 	foreach ($bd->hunt as $hunt) {
@@ -104,6 +140,19 @@ function getAllOtomos($bd){
 
 	return array_keys($n);
 }
+
+function isOtomo($bd, $name){
+	foreach ($bd->hunt as $hunt) {
+		foreach ($hunt->otomo as $otomo) {
+			if(strval($otomo->name) == $name){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// --- PLAYERS ---
 
 function getAllPlayers($bd){
 	$h = getAllHunters($bd);
@@ -150,47 +199,6 @@ function countTops1($bd, $p){
 	return $count;
 }
 
-function avgCarts($bd, $name){
-	$c = [];
-	$hunts = $bd->hunt;
-	foreach ($hunts as $hunt) {
-		foreach ($hunt->player as $player) {
-			if($player->name == $name){
-				if($player->carts != -1){
-					array_push($c, intval($player->carts));
-				}
-					
-				break;
-			}
-		}
-	}
-
-	if(count($c) == 0){
-		return 0;
-	}
-
-	return array_sum($c) / count($c);
-}
-
-function isOtomo($bd, $name){
-	foreach ($bd->hunt as $hunt) {
-		foreach ($hunt->otomo as $otomo) {
-			if(strval($otomo->name) == $name){
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-function getCartsFromHunt($hunt, $name){
-	foreach ($hunt->player as $player) {
-		if($player->name == $name){
-			return intval($player->carts);
-		}
-	}
-}
-
 function questCompleteRatio($bd, $p){
 	$v = 0;
 	$c = 0;
@@ -204,6 +212,97 @@ function questCompleteRatio($bd, $p){
 	}
 
 	return $v / $c * 100;
+}
+
+// --- MONSTERS ---
+
+function getAllMonsters($bd){ //TODO: Optimize by just writing the array myself
+	$mNames = [];
+	foreach ($bd->hunt as $hunt) {
+		foreach ($hunt->monster as $monster) {
+			$mNames[strval($monster->name)] = true;
+		}
+	}
+
+	return array_keys($mNames);
+}
+
+function monsterVictoryPercent($bd, $name){
+	$count = 0;
+	$fail = 0;
+
+	foreach ($bd->hunt as $hunt) {
+		if(count($hunt->monster) != 1){
+			continue;
+		}
+
+		if(strval($hunt->monster->name) != $name){
+			continue;
+		}
+
+		$count++;
+
+		if(intval($hunt->failed)){
+			$fail++;
+		}
+	}
+
+	if($count == 0){
+		return -1;
+	}
+
+	return 100 - ($fail / $count * 100);
+}
+
+function huntedMeanTime($bd, $name){
+	$count = 0;
+	$time = 0;
+
+	foreach ($bd->hunt as $hunt) {
+		if(intval($hunt->failed) || count($hunt->monster) != 1){
+			continue;
+		}
+
+		if(strval($hunt->monster->name) == $name){
+			$count++;
+			$time += $hunt->time;
+		}
+	}
+
+	if($count == 0){
+		return -1;
+	}
+
+	return $time / $count;
+}
+
+function monsterHPRange($bd, $name){
+	$hp = [9999999, -9999999];
+
+	foreach ($bd->hunt as $hunt) {
+		foreach ($hunt->monster as $monster) {
+			if(strval($monster->name) != $name){
+				continue;
+			}
+
+			$mHP = intval($monster->maxHP);
+
+			if($mHP < $hp[0]){
+				$hp[0] = $mHP;
+			}
+
+			if($mHP > $hp[1]){
+				$hp[1] = $mHP;
+			}
+		}
+	}
+
+	return $hp;
+}
+
+// --- MISC ---
+function humanTime($time){
+	echo floor($time / 60), ":", sprintf('%02d', $time % 60);
 }
 
 ?>
