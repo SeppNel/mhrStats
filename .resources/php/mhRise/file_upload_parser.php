@@ -21,13 +21,15 @@ $badAgents = array('curl/7.64.0'); //Block curl user agent
 if(in_array($_SERVER['HTTP_USER_AGENT'],$badAgents)) {
     die('Go away');
 }
-$whitelist = array('png');
+$whitelist = array('webp');
 if(in_array($fileType, $whitelist) == false){
     echo "Tipo de archivo no permitido.";
     exit();
 }
-if(move_uploaded_file($fileTmpLoc, "/mnt/disk/.resources/img/mhRise/players/$name.png")){
-	chmod("/mnt/disk/.resources/img/mhRise/players/$name.png", 0666);
+
+if(move_uploaded_file($fileTmpLoc, "/mnt/disk/.resources/img/mhRise/players/$name.webp")){
+
+	chmod("/mnt/disk/.resources/img/mhRise/players/$name.webp", 0666);
     echo "Subido correctamente.";
 } else {
     echo "Algo ha fallado.";

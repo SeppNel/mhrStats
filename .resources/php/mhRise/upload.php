@@ -62,7 +62,7 @@
 		<progress id="progressBar" value="0" max="100"></progress>
 		<h3 id="status"></h3>
 		<p id="loaded_n_total"></p>
-		<div class="filetype">Solo se permite .png</div>
+		<div class="filetype">Solo se permite .webp</div>
 	</form>
 
 	<script>
@@ -75,7 +75,7 @@
     			};
     			var re = /(?:\.([^.]+))?$/;
     			var ext = re.exec(this.files[0].name)[1];
-    			let whitelist = ['png'];
+    			let whitelist = ['webp'];
     			if(!(whitelist.includes(ext))){
        				alert("Tipo de archivo no permitido");
        				this.value = "";
