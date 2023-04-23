@@ -39,10 +39,9 @@ function getMonstersFromHunt($hunt){
 }
 
 function getTotalDamageFromHunt($hunt){
-	$monsters = $hunt->monster;
 	$damage = [];
 
-	foreach ($monsters as $monster) {
+	foreach ($hunt->monster as $monster) {
 		foreach ($monster->player as $player) {
 			$name = strval($player->name);
 			if(isset($damage[$name])){
@@ -58,11 +57,10 @@ function getTotalDamageFromHunt($hunt){
 }
 
 function getDamageTypeFromHunt($hunt){
-	$monsters = $hunt->monster;
 	$damage = [];
 
 	$first = true;
-	foreach ($monsters as $monster) {
+	foreach ($hunt->monster as $monster) {
 		foreach ($monster->player as $player) {
 			$name = strval($player->name);
 			if($first){
@@ -108,8 +106,7 @@ function getAllHunters($bd){
 
 function avgCarts($bd, $name){
 	$c = [];
-	$hunts = $bd->hunt;
-	foreach ($hunts as $hunt) {
+	foreach ($bd->hunt as $hunt) {
 		foreach ($hunt->player as $player) {
 			if($player->name == $name){
 				if($player->carts != -1){
