@@ -141,7 +141,7 @@ function getAllOtomos($bd){
 function isOtomo($bd, $name){
 	foreach ($bd->hunt as $hunt) {
 		foreach ($hunt->otomo as $otomo) {
-			if(strval($otomo->name) == $name){
+			if($otomo->name == $name){
 				return true;
 			}
 		}
