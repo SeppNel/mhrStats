@@ -233,7 +233,7 @@ function monsterVictoryPercent($bd, $name){
 			continue;
 		}
 
-		if(strval($hunt->monster->name) != $name){
+		if($hunt->monster->name != $name){
 			continue;
 		}
 
