@@ -260,7 +260,7 @@ function huntedMeanTime($bd, $name){
 			continue;
 		}
 
-		if(strval($hunt->monster->name) == $name){
+		if($hunt->monster->name == $name){
 			$count++;
 			$time += $hunt->time;
 		}
@@ -278,7 +278,7 @@ function monsterHPRange($bd, $name){
 
 	foreach ($bd->hunt as $hunt) {
 		foreach ($hunt->monster as $monster) {
-			if(strval($monster->name) != $name){
+			if($monster->name != $name){
 				continue;
 			}
 
