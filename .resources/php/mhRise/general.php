@@ -3,7 +3,8 @@ require_once("helpers.php");
 $bd = simplexml_load_file("/mnt/disk/.resources/bd/mhRise/mhRise.xml");
 
 function getTopDPS($bd){
-	$devi = array();
+	$devi = [];
+	$huntCount = [];
 
 	foreach ($bd->hunt as $hunt) {
 		if(count($hunt->otomo) == 0){
@@ -22,6 +23,13 @@ function getTopDPS($bd){
 		$damages = getTotalDamageFromHunt($hunt);
 
 		foreach ($damages as $player => $value) {
+			if(isset($huntCount[$player])){
+				$huntCount[$player]++;
+			}
+			else{
+				$huntCount[$player] = 1;
+			}
+
 			if(isset($devi[$player])){
 				$devi[$player] = $devi[$player] + (($value/$hp) * 100) - $interval[$numHunters];
 			}
@@ -31,9 +39,9 @@ function getTopDPS($bd){
 		}
 	}
 
-	$media = array();
+	$media = [];
 	foreach ($devi as $player => $value) {
-		$media[$player] = $value / getHuntCount($bd, $player);
+		$media[$player] = $value / $huntCount[$player];
 	}
 
 	arsort($media);
@@ -90,14 +98,26 @@ function getConsistent($bd){
 	return array_key_first($cons);
 }
 
-function getTopGato($bd){ // O(numOtomos * (numCacerias * 2 + 3))
+function getTopGato($bd){
 	$otomos = getAllOtomos($bd);
 	$max = 0; 
 	$name = "";
+
 	foreach ($otomos as $otomo) {
-		$top1 = countTops1($bd, $otomo);
-		if($top1 > $max){
-			$max = $top1;
+		$count = 0;
+		foreach ($bd->hunt as $hunt) {
+			if(!in_array($otomo, getOtomosFromHunt($hunt))){
+				continue;
+			}
+
+			$damages = getTotalDamageFromHunt($hunt);
+			arsort($damages);
+			if(array_keys($damages)[count($hunt->player)] == $otomo){
+				$count++;
+			}
+		}
+		if($count > $max){
+			$max = $count;
 			$name = $otomo;
 		}
 	}
@@ -106,7 +126,7 @@ function getTopGato($bd){ // O(numOtomos * (numCacerias * 2 + 3))
 }
 
 function getMostTop1($bd){
-	$players = getAllPlayers($bd);
+	$players = getAllHunters($bd);
 	$max = 0;
 	$n = "";
 	foreach ($players as $p) {

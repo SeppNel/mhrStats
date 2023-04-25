@@ -7,26 +7,32 @@ const DPS_INTERVAL = [0, 0, 40.4729, 27.9414, 20.6517]; // Just use the hunterAV
 function getHuntersFromHunt($hunt){
 	$pNames = [];
 	foreach ($hunt->player as $player) {
-		$pNames[strval($player->name)] = true;
+		$pNames[] = strval($player->name);
 	}
 
-	return array_keys($pNames);
+	return $pNames;
 }
 
 function getOtomosFromHunt($hunt){
 	$oNames = [];
 	foreach ($hunt->otomo as $otomo) {
-		$oNames[strval($otomo->name)] = true;
+		$oNames[] = strval($otomo->name);
 	}
 
-	return array_keys($oNames);
+	return $oNames;
 }
 
 function getPlayersFromHunt($hunt){
-	$h = getHuntersFromHunt($hunt);
-	$o = getOtomosFromHunt($hunt);
+	$pNames = [];
+	foreach ($hunt->player as $player) {
+		$pNames[] = strval($player->name);
+	}
 
-	return array_merge($h, $o);
+	foreach ($hunt->otomo as $otomo) {
+		$pNames[] = strval($otomo->name);
+	}
+
+	return $pNames;
 }
 
 function getMonstersFromHunt($hunt){
@@ -59,16 +65,14 @@ function getTotalDamageFromHunt($hunt){
 function getDamageTypeFromHunt($hunt){
 	$damage = [];
 
-	$first = true;
 	foreach ($hunt->monster as $monster) {
 		foreach ($monster->player as $player) {
 			$name = strval($player->name);
-			if($first){
+			if(!isset($damage[$name])){
 				$damage[$name]["phys"] = $player->phys;
 				$damage[$name]["elem"] = $player->elem;
 				$damage[$name]["poison"] = $player->poison;
 				$damage[$name]["blast"] = $player->blast;
-				$first = false;
 			}
 			else{
 				$damage[$name]["phys"] = $player->phys + $damage[$name]["phys"];
@@ -152,17 +156,35 @@ function isOtomo($bd, $name){
 // --- PLAYERS ---
 
 function getAllPlayers($bd){
-	$h = getAllHunters($bd);
-	$o = getAllOtomos($bd);
+	$n = [];
+	foreach ($bd->hunt as $hunt) {
+		foreach ($hunt->player as $player) {
+			$n[strval($player->name)] = true;
+		}
 
-	return array_merge($h, $o);
+		foreach ($hunt->otomo as $otomo) {
+			$n[strval($otomo->name)] = true;
+		}
+	}
+
+	return array_keys($n);
 }
 
 function getHuntCount($bd, $p){
 	$count = 0;
 	foreach ($bd->hunt as $hunt) {
-		if(in_array($p, getPlayersFromHunt($hunt))){
-			$count++;
+		foreach ($hunt->player as $player) {
+			if($player->name == $p){
+				$count++;
+				continue 2;
+			}
+		}
+
+		foreach ($hunt->otomo as $otomo) {
+			if($otomo->name == $p){
+				$count++;
+				continue 2;
+			}
 		}
 	}
 
@@ -173,8 +195,7 @@ function countTops1($bd, $p){
 	$count = 0;
 	$isOtomo = isOtomo($bd, $p);
 
-	$hunts = $bd->hunt;
-	foreach ($hunts as $hunt) {
+	foreach ($bd->hunt as $hunt) {
 		if(!in_array($p, getPlayersFromHunt($hunt))){
 			continue;
 		}
