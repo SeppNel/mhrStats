@@ -277,14 +277,12 @@ function huntedMeanTime($bd, $name){
 	$time = 0;
 
 	foreach ($bd->hunt as $hunt) {
-		if(intval($hunt->failed) || count($hunt->monster) != 1){
+		if(count($hunt->monster) != 1 || intval($hunt->failed) || $hunt->monster->name != $name){
 			continue;
 		}
 
-		if($hunt->monster->name == $name){
-			$count++;
-			$time += $hunt->time;
-		}
+		$count++;
+		$time += $hunt->time;
 	}
 
 	if($count == 0){

@@ -299,53 +299,93 @@ function mostDifficultMonster($bd){
 	return $m;
 }
 
-function easiestMonster($bd){
-	$m = "";
-	$p = 0;
+function easyHardMonster($bd, $t){
+	$fail = [];
+	$count = [];
 
-	foreach (getAllMonsters($bd) as $monster) {
-		$new = monsterVictoryPercent($bd, $monster);
-		if($new == -1){
+	foreach (getAllMonsters($bd) as $name) {
+		$fail[$name] = 0;
+		$count[$name] = 0;
+	}
+
+	foreach ($bd->hunt as $hunt) {
+		if(count($hunt->monster) != 1){
 			continue;
 		}
 
-		if($new > $p){
-			$p = $new;
-			$m = $monster;
+		$mName = strval($hunt->monster->name);
+		$count[$mName]++;
+		if(intval($hunt->failed)){
+			$fail[$mName]++;
 		}
 	}
 
-	return $m;
+	foreach ($fail as $name => $fails) {
+		if($count[$name] != 0){
+			$count[$name] = $fails / $count[$name];
+		}
+	}
+
+	if($t == "hard"){
+		arsort($count);
+	}
+	else{
+		asort($count);
+	}
+
+	return array_key_first($count);	
 }
 
-function slowestMonster($bd){
-	$m = "";
-	$t = 0;
 
-	foreach (getAllMonsters($bd) as $monster) {
-		$new = huntedMeanTime($bd, $monster);
-		if($new > $t){
-			$t = $new;
-			$m = $monster;
+function slowestMonster($bd){
+	$timesAdded = [];
+	$count = [];
+
+	foreach (getAllMonsters($bd) as $name) {
+		$timesAdded[$name] = 0;
+		$count[$name] = 0;
+	}
+
+	foreach ($bd->hunt as $hunt) {
+		if(count($hunt->monster) != 1 || intval($hunt->failed)){
+			continue;
+		}
+
+		$mName = strval($hunt->monster->name);
+		$count[$mName]++;
+		$timesAdded[$mName] += $hunt->time;
+	}
+
+	foreach ($timesAdded as $name => $time) {
+		if($count[$name] != 0){
+			$count[$name] = $time / $count[$name];
 		}
 	}
 
-	return $m;
+	arsort($count);
+	return array_key_first($count);
 }
 
 function mostTankyMonster($bd){
-	$m = "";
-	$h = 0;
+	$maxHP = [];
 
-	foreach (getAllMonsters($bd) as $monster) {
-		$new = monsterHPRange($bd, $monster)[1];
-		if($new > $h){
-			$h = $new;
-			$m = $monster;
+	foreach (getAllMonsters($bd) as $name) {
+		$maxHP[$name] = 0;
+	}
+
+	foreach ($bd->hunt as $hunt) {
+		foreach ($hunt->monster as $monster) {
+			$mName = strval($hunt->monster->name);
+			$mHP = intval($monster->maxHP);
+
+			if($mHP > $maxHP[$mName]){
+				$maxHP[$mName] = $mHP;
+			}
 		}
 	}
 
-	return $m;
+	arsort($maxHP);
+	return array_key_first($maxHP);
 }
 
 ?>
@@ -407,10 +447,10 @@ function mostTankyMonster($bd){
 			<td>Monstruo más cazado</td><td><?php echo getMostKilledMonster($bd); ?></td>
 		</tr>
 		<tr>
-			<td>Monstruo más chungo</td><td><?php echo mostDifficultMonster($bd); ?></td>
+			<td>Monstruo más chungo</td><td><?php echo easyHardMonster($bd, "hard"); ?></td>
 		</tr>
 		<tr>
-			<td>Monstruo más easy</td><td><?php echo easiestMonster($bd); ?></td>
+			<td>Monstruo más easy</td><td><?php echo easyHardMonster($bd, "easy"); ?></td>
 		</tr>
 		<tr>
 			<td>Monstruo más lento</td><td><?php echo slowestMonster($bd); ?></td>
