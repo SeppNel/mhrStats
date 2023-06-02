@@ -95,6 +95,23 @@ function getCartsFromHunt($hunt, $name){
 	}
 }
 
+function getTotalDamageCountFromHunt($hunt, $playerName) {
+    $count = 0;
+
+    foreach ($hunt->monster as $monster) {
+        foreach ($monster->player as $player) {
+            if (strval($player->name) != $playerName) {
+                continue;
+            }
+
+            $damage = $player->phys + $player->elem + $player->poison + $player->blast;
+            $count += $damage;
+        }
+    }
+
+    return $count;
+}
+
 // --- HUNTERS ---
 
 function getAllHunters($bd){
@@ -277,12 +294,14 @@ function huntedMeanTime($bd, $name){
 	$time = 0;
 
 	foreach ($bd->hunt as $hunt) {
-		if(count($hunt->monster) != 1 || intval($hunt->failed) || $hunt->monster->name != $name){
+		if(intval($hunt->failed) || count($hunt->monster) != 1){
 			continue;
 		}
 
-		$count++;
-		$time += $hunt->time;
+		if($hunt->monster->name == $name){
+			$count++;
+			$time += $hunt->time;
+		}
 	}
 
 	if($count == 0){

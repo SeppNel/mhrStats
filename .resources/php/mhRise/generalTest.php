@@ -1,4 +1,4 @@
-<?php
+<?php $time_start = microtime(true); 
 require_once("helpers.php");
 $bd = simplexml_load_file("/mnt/disk/.resources/bd/mhRise/mhRise.xml");
 
@@ -96,6 +96,23 @@ function getConsistent($bd){
 
 	asort($cons);
 	return array_key_first($cons);
+}
+
+function getTotalDamageCountFromHunt($hunt, $playerName) {
+    $count = 0;
+
+    foreach ($hunt->monster as $monster) {
+        foreach ($monster->player as $player) {
+            if (strval($player->name) != $playerName) {
+                continue;
+            }
+
+            $damage = $player->phys + $player->elem + $player->poison + $player->blast;
+            $count += $damage;
+        }
+    }
+
+    return $count;
 }
 
 function getTopGato($bd){
@@ -415,7 +432,7 @@ function mostTankyMonster($bd){
 <div class="image-hero-area" style="background: url('/.resources/img/mhRise/begimo.webp') no-repeat center center; background-size: cover;"></div>
 <div id="container">
 <div id="menu">
-	<?php include("/mnt/disk/.resources/php/mhRise/menu.html"); ?>
+	<?php $time_start = microtime(true);  include("/mnt/disk/.resources/php/mhRise/menu.html"); ?>
 </div>
 <div id="content">
 	<table id="huntersTable" class="listTable">
@@ -423,64 +440,64 @@ function mostTankyMonster($bd){
 			<th>Dato</th><th>Valor</th>
 		</tr>
 		<tr>
-			<td>Top DPS</td><td><?php echo getTopDPS($bd); ?></td>
+			<td>Top DPS</td><td><?php $time_start = microtime(true); getTopDPS($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Top Consistencia</td><td><?php echo getConsistent($bd); ?></td>
+			<td>Top Consistencia</td><td><?php $time_start = microtime(true); getConsistent($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Top Gato</td><td><?php echo getTopGato($bd); ?></td>
+			<td>Top Gato</td><td><?php $time_start = microtime(true); getTopGato($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Propenso a Morir</td><td><?php echo carts($bd, "max"); ?></td>
+			<td>Propenso a Morir</td><td><?php $time_start = microtime(true); carts($bd, "max"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Alérgico a Morir</td><td><?php echo carts($bd, "min"); ?></td>
+			<td>Alérgico a Morir</td><td><?php $time_start = microtime(true); carts($bd, "min"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Victorioso</td><td><?php echo victoryStar($bd, "max"); ?></td>
+			<td>Victorioso</td><td><?php $time_start = microtime(true); victoryStar($bd, "max"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Perdedor</td><td><?php echo victoryStar($bd, "min"); ?></td>
+			<td>Perdedor</td><td><?php $time_start = microtime(true); victoryStar($bd, "min"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Más Tops 1</td><td><?php echo getMostTop1($bd); ?></td>
+			<td>Más Tops 1</td><td><?php $time_start = microtime(true); getMostTop1($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Más Elemental</td><td><?php echo getMostDamageType($bd, "elem"); ?></td>
+			<td>Más Elemental</td><td><?php $time_start = microtime(true); getMostDamageType($bd, "elem"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Más Explosivo</td><td><?php echo getMostDamageType($bd, "blast"); ?></td>
+			<td>Más Explosivo</td><td><?php $time_start = microtime(true); getMostDamageType($bd, "blast"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Más Tóxico</td><td><?php echo getMostDamageType($bd, "poison"); ?></td>
+			<td>Más Tóxico</td><td><?php $time_start = microtime(true); getMostDamageType($bd, "poison"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Monstruo más cazado</td><td><?php echo getMostKilledMonster($bd); ?></td>
+			<td>Monstruo más cazado</td><td><?php $time_start = microtime(true); getMostKilledMonster($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Monstruo más chungo</td><td><?php echo easyHardMonster($bd, "hard"); ?></td>
+			<td>Monstruo más chungo</td><td><?php $time_start = microtime(true); easyHardMonster($bd, "hard"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Monstruo más easy</td><td><?php echo easyHardMonster($bd, "easy"); ?></td>
+			<td>Monstruo más easy</td><td><?php $time_start = microtime(true); easyHardMonster($bd, "easy"); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Monstruo más lento</td><td><?php echo slowestMonster($bd); ?></td>
+			<td>Monstruo más lento</td><td><?php $time_start = microtime(true); slowestMonster($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Monstruo más tanque</td><td><?php echo mostTankyMonster($bd); ?></td>
+			<td>Monstruo más tanque</td><td><?php $time_start = microtime(true); mostTankyMonster($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Dia de mayor vicio</td><td><?php echo date("d-m-Y", intval(getMostVicio($bd))); ?></td>
+			<td>Dia de mayor vicio</td><td><?php $time_start = microtime(true); getMostVicio($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Misiones Fallidas</td><td><?php echo failQuest($bd); ?></td>
+			<td>Misiones Fallidas</td><td><?php $time_start = microtime(true); failQuest($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Tiempo en misiones</td><td><?php $time = timeSpent($bd); echo floor($time/3600), ":", floor(($time / 60) % 60), ":", $time%60; ?></td>
+			<td>Tiempo en misiones</td><td><?php $time_start = microtime(true);  timeSpent($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 		<tr>
-			<td>Zenis gastados en bombas</td><td><?php echo bombMoney($bd), "z"; ?></td>
+			<td>Zenis gastados en bombas</td><td><?php $time_start = microtime(true); bombMoney($bd); echo (microtime(true) - $time_start); ?> </td>
 		</tr>
 	</table>
 </div>
